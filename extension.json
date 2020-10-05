@@ -1,0 +1,95 @@
+{
+    "identifier": "cc.aeron.nova-flake8",
+    "name": "Flake8",
+    "organization": "Aeron",
+    "description": "Flake8, a tool to check the style and quality of Python code, for Nova.",
+    "version": "0.1.0",
+    "categories": ["issues", "commands"],
+    "repository": "https://github.com/Aeron/Flake8.novaextension",
+    "bugs": "https://github.com/Aeron/Flake8.novaextension/issues",
+    "license": "Apache-2.0",
+    "main": "main.js",
+    "activationEvents": [
+        "onLanguage:python"
+    ],
+    "entitlements": {
+        "process": true
+    },
+    "commands": {
+        "editor": [
+            {
+                "title": "Check with Flake8",
+                "command": "checkWithFlake8",
+                "shortcut": "cmd-shift-C",
+                "filters": {
+                    "syntaxes": ["python"]
+                }
+            }
+        ]
+    },
+    "issueMatchers": {
+        "flake8": {
+            "pattern": {
+                "regexp": "^([0-9]+):([0-9]+)\\s([A-Z0-9]+)\\s(.*)",
+                "message": 4,
+                "code": 3,
+                "line": 1,
+                "column": 2,
+                "severity": "Info",
+            }
+        }
+    },
+    "config": [
+        {
+            "key": "cc.aeron.nova-flake8.executablePath",
+            "title": "Executable Path",
+            "description": "Path to the Flake8 executable.",
+            "type": "path",
+            "default": "/usr/local/bin/flake8"
+        },
+        {
+            "key": "cc.aeron.nova-flake8.commandArguments",
+            "title": "Command Arguments",
+            "description": "Additional arguments. The --format option always set.",
+            "type": "string",
+            "default": null
+        },
+        {
+            "key": "cc.aeron.nova-flake8.checkMode",
+            "title": "Check Mode",
+            "description": "An event on which to perform a check.",
+            "type": "enum",
+            "values": [
+                ["onChange", "On a file change"],
+                ["onSave", "On a file save"],
+                ["-", "Command only"]
+            ],
+            "default": "onChange"
+        },
+    ],
+    "configWorkspace": [
+        {
+            "key": "cc.aeron.nova-flake8.executablePath",
+            "title": "Executable Path",
+            "description": "Path to the Flake8 executable.",
+            "type": "path",
+        },
+        {
+            "key": "cc.aeron.nova-flake8.commandArguments",
+            "title": "Command Arguments",
+            "description": "Additional arguments. The --format option always set.",
+            "type": "string"
+        },
+        {
+            "key": "cc.aeron.nova-flake8.checkMode",
+            "title": "Check Mode",
+            "description": "An event on which to perform a check.",
+            "type": "enum",
+            "values": [
+                ["onChange", "On a file change"],
+                ["onSave", "On a file save"],
+                ["-", "Command only"]
+            ]
+        },
+    ],
+}

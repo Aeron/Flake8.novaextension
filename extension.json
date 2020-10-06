@@ -3,7 +3,7 @@
     "name": "Flake8",
     "organization": "Aeron",
     "description": "Flake8, a tool to check the style and quality of Python code, for Nova.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "categories": ["issues", "commands"],
     "repository": "https://github.com/Aeron/Flake8.novaextension",
     "bugs": "https://github.com/Aeron/Flake8.novaextension/issues",

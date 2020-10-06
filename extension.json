@@ -35,7 +35,7 @@
                 "code": 3,
                 "line": 1,
                 "column": 2,
-                "severity": "Info",
+                "severity": "Info"
             }
         }
     },
@@ -65,14 +65,14 @@
                 ["-", "Command only"]
             ],
             "default": "onChange"
-        },
+        }
     ],
     "configWorkspace": [
         {
             "key": "cc.aeron.nova-flake8.executablePath",
             "title": "Executable Path",
             "description": "Path to the Flake8 executable.",
-            "type": "path",
+            "type": "path"
         },
         {
             "key": "cc.aeron.nova-flake8.commandArguments",
@@ -90,6 +90,6 @@
                 ["onSave", "On a file save"],
                 ["-", "Command only"]
             ]
-        },
-    ],
+        }
+    ]
 }

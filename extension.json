@@ -20,7 +20,7 @@
             {
                 "title": "Check with Flake8",
                 "command": "checkWithFlake8",
-                "shortcut": "cmd-shift-C",
+                "shortcut": "shift-cmd-8",
                 "filters": {
                     "syntaxes": ["python"]
                 }
@@ -35,7 +35,7 @@
                 "code": 3,
                 "line": 1,
                 "column": 2,
-                "severity": "Info"
+                "severity": "hint"
             }
         }
     },
@@ -72,7 +72,8 @@
             "key": "cc.aeron.nova-flake8.executablePath",
             "title": "Executable Path",
             "description": "Path to the Flake8 executable.",
-            "type": "path"
+            "type": "path",
+            "placeholder": "/usr/local/bin/flake8"
         },
         {
             "key": "cc.aeron.nova-flake8.commandArguments",

@@ -3,7 +3,8 @@ const IssuesProvider = require("./provider");
 
 exports.activate = function() {
     const config = new Config();
-    const issuesProvider = new IssuesProvider(config);
+    const issueCollection = new IssueCollection("flake8");
+    const issuesProvider = new IssuesProvider(config, issueCollection);
 
     console.info("Executable path: " + config.get("executablePath"));
     console.info("Command arguments: " + config.get("commandArguments"));
@@ -28,7 +29,9 @@ exports.activate = function() {
         });
     }
 
-    nova.commands.register(
-        "checkWithFlake8", (editor) => issuesProvider.provideIssues(editor)
-    );
+    nova.commands.register("checkWithFlake8", (editor) => {
+        issuesProvider.check(editor, (issues) => {
+            issueCollection.set(editor.document.uri, issues);
+        });
+    });
 }

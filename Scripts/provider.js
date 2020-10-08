@@ -5,8 +5,9 @@ const categorySeverity = {  // TODO: move to Nova config maybe?
 }
 
 class IssuesProvider {
-    constructor(config) {
+    constructor(config, issueCollection) {
         this.config = config;
+        this.issueCollection = issueCollection;
     }
 
     async getProcess() {
@@ -40,6 +41,7 @@ class IssuesProvider {
     }
 
     async provideIssues(editor) {
+        this.issueCollection.clear();
         return new Promise((resolve, reject) => this.check(editor, resolve));
     }
 
@@ -50,7 +52,7 @@ class IssuesProvider {
         const content = editor.document.getTextInRange(textRange);
         const filePath = nova.workspace.relativizePath(editor.document.path);
 
-        let parser = new IssueParser("flake8");
+        const parser = new IssueParser("flake8");
 
         const process = await this.getProcess();
 
@@ -59,7 +61,7 @@ class IssuesProvider {
         process.onStdout((output) => parser.pushLine(output));
         process.onStderr((error) => console.error(error));
         process.onDidExit((status) => {
-            console.log("Checking " + filePath);
+            console.info("Checking " + filePath);
 
             for (let issue of parser.issues) {
                 let severity = categorySeverity[issue.code[0]];
@@ -68,18 +70,20 @@ class IssuesProvider {
                     issue.severity = IssueSeverity[severity];
                 }
 
-                // HACK: looks like it's a bug (probably known)
-                issue.line += 1;
-                issue.column += 1;
+                // NOTE: Nova version 1.2 and prior has a known bug
+                if (nova.version[0] === 1 && nova.version[1] <= 2) {
+                    issue.line += 1;
+                    issue.column += 1;
+                }
             }
 
-            console.log("Found " + parser.issues.length + " issue(s)");
+            console.info("Found " + parser.issues.length + " issue(s)");
 
             resolve(parser.issues);
             parser.clear();
         });
 
-        console.log("Running " + process.command + " " + process.args.join(" "));
+        console.info("Running " + process.command + " " + process.args.join(" "));
 
         process.start();
 

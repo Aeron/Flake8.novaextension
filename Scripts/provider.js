@@ -11,12 +11,17 @@ class IssuesProvider {
     }
 
     async getProcess() {
-        const executablePath = this.config.get("executablePath");
+        const executablePath = nova.path.expanduser(this.config.get("executablePath"));
         const commandArguments = this.config.get("commandArguments");
         const defaultOptions = [
             "--format=%(row)d:%(col)d %(code)s %(text)s",
             "-"
         ];
+
+        if (!nova.fs.stat(executablePath)) {
+            console.error(`Executable ${executablePath} does not exist`);
+            return;
+        }
 
         var options = [];
 
@@ -42,11 +47,14 @@ class IssuesProvider {
 
     async provideIssues(editor) {
         this.issueCollection.clear();
-        return new Promise((resolve, reject) => this.check(editor, resolve));
+        return new Promise((resolve, reject) => this.check(editor, resolve, reject));
     }
 
-    async check(editor, resolve) {
-        if (editor.document.isEmpty) return;
+    async check(editor, resolve=null, reject=null) {
+        if (editor.document.isEmpty) {
+            if (reject) reject("empty file");
+            return;
+        }
 
         const textRange = new Range(0, editor.document.length);
         const content = editor.document.getTextInRange(textRange);
@@ -56,7 +64,10 @@ class IssuesProvider {
 
         const process = await this.getProcess();
 
-        if (!process) return;
+        if (!process) {
+            if (reject) reject("no process");
+            return;
+        }
 
         process.onStdout((output) => parser.pushLine(output));
         process.onStderr((error) => console.error(error));

@@ -4,15 +4,16 @@ const categorySeverity = {  // TODO: move to Nova config maybe?
     "W": "Warning"
 }
 
-class IssuesProvider {
-    constructor(config, issueCollection) {
+class IssueProvider {
+    constructor(config) {
         this.config = config;
-        this.issueCollection = issueCollection;
+        this.issueCollection = new IssueCollection("flake8");
+        this.parser = new IssueParser("flake8");
     }
 
-    async getProcess() {
-        const executablePath = nova.path.expanduser(this.config.get("executablePath"));
-        const commandArguments = this.config.get("commandArguments");
+    getProcess() {
+        const executablePath = nova.path.expanduser(this.config.executablePath());
+        const commandArguments = this.config.commandArguments();
         const defaultOptions = [
             "--format=%(row)d:%(col)d %(code)s %(text)s",
             "-"
@@ -45,12 +46,11 @@ class IssuesProvider {
         );
     }
 
-    async provideIssues(editor) {
-        this.issueCollection.clear();
+    provideIssues(editor) {
         return new Promise((resolve, reject) => this.check(editor, resolve, reject));
     }
 
-    async check(editor, resolve=null, reject=null) {
+    check(editor, resolve = null, reject = null) {
         if (editor.document.isEmpty) {
             if (reject) reject("empty file");
             return;
@@ -60,21 +60,19 @@ class IssuesProvider {
         const content = editor.document.getTextInRange(textRange);
         const filePath = nova.workspace.relativizePath(editor.document.path);
 
-        const parser = new IssueParser("flake8");
-
-        const process = await this.getProcess();
+        const process = this.getProcess();
 
         if (!process) {
             if (reject) reject("no process");
             return;
         }
 
-        process.onStdout((output) => parser.pushLine(output));
+        process.onStdout((output) => this.parser.pushLine(output));
         process.onStderr((error) => console.error(error));
         process.onDidExit((status) => {
-            console.info("Checking " + filePath);
+            console.info(`Checking ${filePath}`);
 
-            for (let issue of parser.issues) {
+            for (let issue of this.parser.issues) {
                 let severity = categorySeverity[issue.code[0]];
 
                 if (severity) {
@@ -88,13 +86,19 @@ class IssuesProvider {
                 }
             }
 
-            console.info("Found " + parser.issues.length + " issue(s)");
+            console.info(`Found ${this.parser.issues.length} issue(s)"`);
 
-            resolve(parser.issues);
-            parser.clear();
+            this.issueCollection.set(editor.document.uri, this.parser.issues);
+            this.parser.clear();
+
+            // HACK: nova.assistants.registerIssueAssistant uses its own private and
+            // nameless IssueCollection, and that leads to issue duplication between
+            // the command and on-save check. So, we give it nothing, and keep using
+            // our explicit IssueCollection.
+            if (resolve) resolve();
         });
 
-        console.info("Running " + process.command + " " + process.args.join(" "));
+        console.info(`Running ${process.command} ${process.args.join(" ")}`);
 
         process.start();
 
@@ -107,4 +111,4 @@ class IssuesProvider {
     }
 }
 
-module.exports = IssuesProvider;
+module.exports = IssueProvider;

@@ -1,14 +1,12 @@
 const Config = require("./config");
-const IssuesProvider = require("./provider");
+const IssueProvider = require("./provider");
 
-exports.activate = function() {
-    const config = new Config();
-    const issueCollection = new IssueCollection("flake8");
-    const issuesProvider = new IssuesProvider(config, issueCollection);
+exports.activate = function () {
+    const issueProvider = new IssueProvider(Config);
 
-    console.info("Executable path: " + config.get("executablePath"));
-    console.info("Command arguments: " + config.get("commandArguments"));
-    console.info("Check mode: " + config.get("checkMode"));
+    console.info(`Executable path: ${Config.executablePath()}`);
+    console.info(`Command arguments: ${Config.commandArguments()}`);
+    console.info(`Check mode: ${Config.checkMode()}`);
 
     var assistant = null;
 
@@ -19,19 +17,17 @@ exports.activate = function() {
                 assistant = null;
             }
 
-            const checkMode = config.get("checkMode");
+            const checkMode = Config.checkMode();
 
             if (checkMode !== "-") {
                 assistant = nova.assistants.registerIssueAssistant(
-                    "python", issuesProvider, {"event": checkMode}
+                    "python", issueProvider, { "event": checkMode }
                 );
             }
         });
     }
 
     nova.commands.register("checkWithFlake8", (editor) => {
-        issuesProvider.check(editor, (issues) => {
-            issueCollection.set(editor.document.uri, issues);
-        });
+        issueProvider.check(editor);
     });
 }

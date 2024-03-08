@@ -4,7 +4,10 @@
     "organization": "Aeron",
     "description": "Flake8, a tool to check the style and quality of Python code, for Nova.",
     "version": "1.0.0",
-    "categories": ["issues", "commands"],
+    "categories": [
+        "issues",
+        "commands"
+    ],
     "repository": "https://github.com/Aeron/Flake8.novaextension",
     "bugs": "https://github.com/Aeron/Flake8.novaextension/issues",
     "license": "Apache-2.0",
@@ -23,7 +26,9 @@
                 "command": "checkWithFlake8",
                 "shortcut": "shift-cmd-8",
                 "filters": {
-                    "syntaxes": ["python"]
+                    "syntaxes": [
+                        "python"
+                    ]
                 }
             }
         ]
@@ -61,9 +66,18 @@
             "description": "An event on which to perform a check.",
             "type": "enum",
             "values": [
-                ["onChange", "On a file change"],
-                ["onSave", "On a file save"],
-                ["-", "Command only"]
+                [
+                    "onChange",
+                    "On a file change"
+                ],
+                [
+                    "onSave",
+                    "On a file save"
+                ],
+                [
+                    "-",
+                    "Command only"
+                ]
             ],
             "default": "onChange"
         }
@@ -88,9 +102,18 @@
             "description": "An event on which to perform a check.",
             "type": "enum",
             "values": [
-                ["onChange", "On a file change"],
-                ["onSave", "On a file save"],
-                ["-", "Command only"]
+                [
+                    "onChange",
+                    "On a file change"
+                ],
+                [
+                    "onSave",
+                    "On a file save"
+                ],
+                [
+                    "-",
+                    "Command only"
+                ]
             ]
         }
     ]

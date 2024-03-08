@@ -1,8 +1,10 @@
 # Flake8 Nova Extension
 
-It’s a stand-alone [Nova](https://nova.app) extension to use
-[Flake8](https://gitlab.com/pycqa/flake8), a tool to check the style and quality
-of Python code.
+It’s a stand-alone [Nova][nova] extension to use [Flake8][flake8], a tool to check the
+style and quality of Python code.
+
+[nova]: https://nova.app
+[flake8]: https://gitlab.com/pycqa/flake8
 
 ## Requirements
 
@@ -32,15 +34,3 @@ the first argument.
 
 The extension respects `.flake8` in a project directory. So, there’s no need to
 specify the `--config` argument explicitly.
-
-## Caveats
-
-### Using mixed mode
-
-In case you’re using the check on change/save mode, the command is still available
-to use. So, if you try to use command after a check triggered by a related event, and
-there are any errors, then discovered issues become duplicated in the Issues sidebar.
-
-Yet, it’ll come to normal as soon as a related event triggers again.
-
-Hopefully, I’ll find a way to fix it later.

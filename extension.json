@@ -3,7 +3,7 @@
     "name": "Flake8",
     "organization": "Aeron",
     "description": "Flake8, a tool to check the style and quality of Python code, for Nova.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "categories": [
         "issues",
         "commands"
@@ -93,7 +93,7 @@
         {
             "key": "cc.aeron.nova-flake8.commandArguments",
             "title": "Command Arguments",
-            "description": "Additional arguments. The --format option always set.",
+            "description": "Additional arguments. The --format option is always set.",
             "type": "string"
         },
         {

@@ -1,3 +1,5 @@
+const utils = require("./utils");
+
 const categorySeverity = {  // TODO: move to Nova config maybe?
     "E": "Error",
     "F": "Error",
@@ -11,35 +13,31 @@ class IssueProvider {
         this.parser = new IssueParser("flake8");
     }
 
-    getProcess() {
-        const executablePath = nova.path.expanduser(this.config.executablePath());
-        const commandArguments = this.config.commandArguments();
+    getProcessOptions() {
         const defaultOptions = [
             "--format=%(row)d:%(col)d %(code)s %(text)s",
             "-"
         ];
+        const commandArguments = this.config.commandArguments();
+        const extraOptions = utils.normalizeOptions(commandArguments);
+
+        return Array.from(new Set([...extraOptions, ...defaultOptions]));
+    }
+
+    getProcess() {
+        const executablePath = nova.path.expanduser(this.config.executablePath());
 
         if (!nova.fs.stat(executablePath)) {
             console.error(`Executable ${executablePath} does not exist`);
             return;
         }
 
-        var options = [];
-
-        if (commandArguments) {
-            options = commandArguments
-                .replaceAll("\n", " ")
-                .split(" ")
-                .map((option) => option.trim())
-                .filter((option) => option !== " ");
-        }
-
-        options = [...options, ...defaultOptions].filter((option) => option !== "");
+        const options = this.getProcessOptions();
 
         return new Process(
             executablePath,
             {
-                args: Array.from(new Set(options)),
+                args: options,
                 stdio: "pipe",
                 cwd: nova.workspace.path,  // NOTE: must be explicitly set
             }

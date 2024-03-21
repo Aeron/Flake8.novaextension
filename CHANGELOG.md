@@ -2,6 +2,15 @@
 
 These versions follow [Semantic Versioning 2.0](https://semver.org).
 
+## 1.0.2 (2024-03-21)
+
+This patch contains a fix for potential issues with user options deduplication,
+uniformity, etc.
+
+### Fixed
+
+- Command arguments’ separator character typo
+
 ## 1.0.1 (2024-03-08)
 
 It’s mainly refactoring and optimizations, except for a single issue fix.
